@@ -1,3 +1,6 @@
 <resources>
     <string name="app_name">BookReview</string>
+    <string name="interpark_apikey">36494DB4C76866B2F696E9672624BEBD4E7A0D7DEDF9B8D84F5674CCBC297131</string>
+    <string name="a11y_book_cover">책 표지</string>
+    <string name="search_hint">검색어를 입력하세요</string>
 </resources>

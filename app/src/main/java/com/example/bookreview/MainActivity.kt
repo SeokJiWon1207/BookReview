@@ -3,7 +3,10 @@ package com.example.bookreview
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.bookreview.adapter.BookAdapter
 import com.example.bookreview.api.BookService
+import com.example.bookreview.databinding.ActivityMainBinding
 import com.example.bookreview.model.BestSellerDTO
 import retrofit2.Call
 import retrofit2.Callback
@@ -15,27 +18,36 @@ class MainActivity : AppCompatActivity() {
 
     companion object {
         private const val TAG = "MainAcivity"
+        private const val BASE_URL = "https://book.interpark.com/"
     }
+
+    private lateinit var binding: ActivityMainBinding
+    private var adapter = BookAdapter()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
         // Retrofit Build
         val retrofit = Retrofit.Builder()
-            .baseUrl("https://book.interpark.com")
+            .baseUrl(BASE_URL) // baseUrl은 꼭 '/' 로 끝나야 함, 아니면 예외 발생
             .addConverterFactory(GsonConverterFactory.create())
             .build()
 
+        // Retrofit instance로 interface 객체 구현
         val bookService = retrofit.create(BookService::class.java)
 
-        bookService.getBestSellerBook("36494DB4C76866B2F696E9672624BEBD4E7A0D7DEDF9B8D84F5674CCBC297131")
-            .enqueue(object: Callback<BestSellerDTO> {
+        bookService.getBestSellerBook(R.string.interpark_apikey.toString())
+            .enqueue(object: Callback<BestSellerDTO> { // 비동기 enqueue 작업으로 실행, 통신종료 후 이벤트 처리를 위해 Callback ㅡㅇ록
+                // Success Case -> MainThread에서 처리
                 override fun onResponse(call: Call<BestSellerDTO>, response: Response<BestSellerDTO>) {
 
-                    if (response.isSuccessful.not()) {
-                        Log.e(TAG,"not success")
+                    if (response.isSuccessful) {
+                        Log.e(TAG,"onResponse, 성공")
                         return
+                    } else {
+                        Log.d(TAG,"onResponse, 실패")
                     }
 
                     response.body()?.let {
@@ -44,16 +56,21 @@ class MainActivity : AppCompatActivity() {
                         it.books.forEach { book ->
                             Log.d(TAG, book.toString())
                         }
-                    }
-                }
 
+                        adapter.submitList(it.books)
+                    }
+
+                }
+                // Fail Case -> MainThread에서 처리
                 override fun onFailure(call: Call<BestSellerDTO>, t: Throwable) {
-                    Log.d(TAG, t.toString())
+                    t.message?.let { Log.d(TAG, it) }
                 }
 
             })
 
-    }
+        binding.recyclerView.layoutManager = LinearLayoutManager(this)
+        binding.recyclerView.adapter = adapter
 
+    }
 
 }
