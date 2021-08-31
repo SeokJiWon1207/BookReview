@@ -5,9 +5,11 @@
       <map>
         <entry key="..\:/Users/syt11/AndroidStudioProjects/BookReview/app/src/main/res/drawable/background_gray_stroke_radius_8.xml" value="0.10555555555555556" />
         <entry key="..\:/Users/syt11/AndroidStudioProjects/BookReview/app/src/main/res/drawable/background_search_view.xml" value="0.14739583333333334" />
+        <entry key="..\:/Users/syt11/AndroidStudioProjects/BookReview/app/src/main/res/drawable/ic_baseline_clear_24.xml" value="0.1" />
         <entry key="..\:/Users/syt11/AndroidStudioProjects/BookReview/app/src/main/res/drawable/ic_search.xml" value="0.14739583333333334" />
-        <entry key="..\:/Users/syt11/AndroidStudioProjects/BookReview/app/src/main/res/layout/activity_main.xml" value="0.264" />
-        <entry key="..\:/Users/syt11/AndroidStudioProjects/BookReview/app/src/main/res/layout/item_book.xml" value="0.12604166666666666" />
+        <entry key="..\:/Users/syt11/AndroidStudioProjects/BookReview/app/src/main/res/layout/activity_main.xml" value="0.1" />
+        <entry key="..\:/Users/syt11/AndroidStudioProjects/BookReview/app/src/main/res/layout/item_book.xml" value="0.264" />
+        <entry key="..\:/Users/syt11/AndroidStudioProjects/BookReview/app/src/main/res/layout/item_history.xml" value="0.264" />
       </map>
     </option>
   </component>
