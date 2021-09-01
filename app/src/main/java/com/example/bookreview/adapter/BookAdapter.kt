@@ -10,7 +10,7 @@ import com.example.bookreview.databinding.ItemBookBinding
 import com.example.bookreview.model.Book
 
 // ListAdapter는 RecyclerAdapter와 비슷하지만 조금 다르다.
-class BookAdapter: ListAdapter<Book, BookAdapter.ViewHolder>(diffUtil) {
+class BookAdapter(private val itemClickListener: (Book) -> Unit): ListAdapter<Book, BookAdapter.ViewHolder>(diffUtil) {
 
     inner class ViewHolder(private val binding: ItemBookBinding) : RecyclerView.ViewHolder(binding.root) {
 
@@ -18,6 +18,9 @@ class BookAdapter: ListAdapter<Book, BookAdapter.ViewHolder>(diffUtil) {
             binding.titleTextView.text = bookModel.title
             binding.descriptionTextView.text = bookModel.description
 
+            binding.root.setOnClickListener {
+                itemClickListener(bookModel)
+            }
             Glide
                 .with(binding.coverImageView.context) // 인자로 context -> view에 있는 context할당
                 .load(bookModel.coverSmallUrl) // 이미지 로딩

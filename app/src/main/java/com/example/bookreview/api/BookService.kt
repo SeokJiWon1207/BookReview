@@ -6,6 +6,7 @@ import retrofit2.http.GET
 import retrofit2.http.Query
 import com.example.bookreview.model.BestSellerDTO
 
+// Retrofit 1-2) interface로 사용할 메소드 선언
 interface BookService {
 
     // output 형식은 json으로 고정

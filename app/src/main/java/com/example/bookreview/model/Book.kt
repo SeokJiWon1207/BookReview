@@ -4,8 +4,9 @@ import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
 import kotlinx.android.parcel.Parcelize
 
+// Retrofit 1-1) REST API로 받아올 데이터를 받아올 모델 클래스 생성
 // 서버에서 받는 데이터 모델
-@Parcelize
+@Parcelize // 직렬화가능한 data class
 data class Book(
     // json 데이터의 변수명과 다르게 변수를 짓는 경우
     // @SerializedName("속성명")으로 설정 가능

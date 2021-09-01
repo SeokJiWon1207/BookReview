@@ -1,10 +1,12 @@
 package com.example.bookreview
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.KeyEvent
 import android.view.MotionEvent
+import androidx.appcompat.widget.Toolbar
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.room.Room
@@ -42,21 +44,24 @@ class MainActivity : AppCompatActivity() {
         initBookRecyclerView()
         initHistoryRecyclerView()
 
+
+        // Room 2-4) builder를 호출해 새로운 db 객체 생성
         db = Room.databaseBuilder(
             applicationContext,
             AppDatabase::class.java,
             "historyDB"
         ).build()
 
-        // Retrofit Build
+        // Retrofit 1-3) Retrofit 인스턴스 생성
         val retrofit = Retrofit.Builder()
             .baseUrl(BASE_URL) // baseUrl은 꼭 '/' 로 끝나야 함, 아니면 예외 발생
             .addConverterFactory(GsonConverterFactory.create())
             .build()
 
-        // Retrofit instance로 interface 객체 구현
+        // Retrofit 1-4) instance로 interface 객체 구현
         bookService = retrofit.create(BookService::class.java)
 
+        // Retrofit 1-5) BookService의 Method 사용으로 받아온 데이터를 RecyclerView에 뿌려주기
         bookService.getBestSellerBook(getString(R.string.interpark_apikey))
             .enqueue(object :
                 Callback<BestSellerDTO> { // 비동기 enqueue 작업으로 실행, 통신종료 후 이벤트 처리를 위해 Callback ㅡㅇ록
@@ -87,7 +92,11 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun initBookRecyclerView() {
-        adapter = BookAdapter()
+        adapter = BookAdapter(itemClickListener = {
+            val intent = Intent(this, DetailActivity::class.java)
+            intent.putExtra("bookModel",it) // 직렬화시켜 데이터를 한번에 넘김
+            startActivity(intent)
+        })
 
         binding.recyclerView.layoutManager = LinearLayoutManager(this)
         binding.recyclerView.adapter = adapter
@@ -112,6 +121,7 @@ class MainActivity : AppCompatActivity() {
             }
             return@setOnKeyListener false
         }
+
         binding.searchEditText.setOnTouchListener { v, event ->
             if (event.action == MotionEvent.ACTION_DOWN) {
                 showHistoryView()
@@ -148,8 +158,10 @@ class MainActivity : AppCompatActivity() {
                 }
             })
     }
-
+    // 검색한 기록을 보여주는 메소드
     private fun showHistoryView() {
+        // Room 2-5) MainThread 에서 Room DB에 접근하려고 하면 에러가 발생한다.
+        // Room과 관련된 액션은 Thread,AsyncTask 등을 이용해 백그라운드에서 작업해야 한다.
         Thread {
             val keywords = db.historyDao().getAll().reversed() // 최신순으로 가져오기
             // UI 처리
